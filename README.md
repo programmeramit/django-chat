@@ -1,6 +1,6 @@
 
 
-# **Real-Time Group Chat Application **
+# **Real-Time Group Chat Application**
 
 This is a **real-time group chat application** built with **Django Channels** and **Redis**. The app allows users to join chat groups, send and receive messages instantly, and includes features like unique usernames and easy group name copying.
 
