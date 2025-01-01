@@ -115,6 +115,7 @@ CHANNEL_LAYERS = {
 
 ### **Login Page**
 - Users can enter their username and group name.
+![Screenshot_1](scr1.png)
 
 ### **Chat Interface**
 - Real-time messages appear as soon as they're sent.
