@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Group chats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #FFB347, #FFCC33);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .landing-container {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .landing-container h1 {
+            color: #FF8C00;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .landing-container p {
+            color: #555;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .landing-container input {
+            width: 80%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            font-size: 1em;
+            background: rgba(255, 215, 130, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .landing-container button {
+            width: 80%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #FF8C00;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .landing-container button:hover {
+            background-color: #FF7F00;
+        }
+
+        .join-message {
+            display: none;
+            margin-top: 20px;
+            font-size: 1em;
+            color: #FF8C00;
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <h1>Join the Group</h1>
+        <p>Enter the group name and username to connect!</p>
+        <input type="text" id="groupName" placeholder="Group Code">
+        <input type="text" id="user" placeholder="Username">
+
+        <button id="joinButton">Join Group</button>
+        <p class="join-message" id="joinMessage"></p>
+    </div>
+
+    <script>
+        const joinButton = document.getElementById('joinButton');
+        const groupNameInput = document.getElementById('groupName');
+        const joinMessage = document.getElementById('joinMessage');
+        const username = document.getElementById("user")
+
+        joinButton.addEventListener('click', () => {
+            const groupName = groupNameInput.value.trim();
+            const name = username.value.trim();
+            if (groupName && username) {
+
+                window.location.href = `chat/${groupName}/${name}`
+            } else {
+                joinMessage.textContent = 'Please enter a valid group name!';
+                joinMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

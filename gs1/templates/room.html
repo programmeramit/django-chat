@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Group Chats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding:0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #FFB347, #FFCC33);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: scroll;
+            height:500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #FF8C00;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+    
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background-color: #FFA500;
+            color: white;
+        }
+
+        .message.other {
+            align-self: flex-start;
+            background-color: #FFF5E1;
+            color: #333;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            margin-right: 10px;
+            font-size: 1em;
+            background: rgba(255, 215, 130, 0.4);
+        }
+
+        .chat-input button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #FF8C00;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #FF7F00;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .chatdown{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            font-size:0.6rem;
+            gap:8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            
+            Welcome to {{group_name|upper}} Group
+
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>{{name}}</span>
+                <button id="copy" onclick="copy()" style="font-size:0.8rem;border:none;padding:5px;border-radius:5px;">Copy Group Id</button>
+
+
+            </div>
+
+        </div>
+        <div class="chat-messages">
+            <div class="message other">Welcome to Django Group Chat App
+                <div class="chatdown">
+                    <span>From django</span>
+                </span>now</span>
+                </div>
+            </div>
+            <div class="message user">Hi! How are you?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Type a message..." id="text">
+            <button id="click" > Send</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        const messages = document.querySelector('.message');
+        gsap.fromTo(messages, { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.2, duration: 0.6 });
+
+        const socket= new WebSocket("ws://localhost:8000/ws/chat/"+"{{group_name}}")
+        const container = document.querySelector(".chat-messages")
+
+        socket.onopen = () => {
+            console.log("connected to server")
+        };
+
+socket.addEventListener('message', (event) => {
+
+    console.log('Message from server:', event.data);
+    data = JSON.parse(event.data)
+    console.log(data.username)
+    const new_div = document.createElement("div")
+
+
+    new_div.innerText = data.message
+    new_div.innerHTML = `
+    ${data.message}
+    <div class="chatdown">
+                    <span>${data.username}</span>
+                </span>${data.timestamp}</span>
+                </div>
+    
+    `
+    if("{{name}}" === data.username){
+        new_div.classList.add("message","user")
+
+    }else{
+        new_div.classList.add("message","other")
+
+    }
+
+    container.appendChild(new_div)
+    container.scrollTop = container.scrollHeight;
+
+});
+
+socket.addEventListener('error', (event) => {
+    console.error('WebSocket error:', event);
+});
+
+socket.addEventListener('close', (event) => {
+    console.log('WebSocket connection closed.', event);
+});
+
+document.getElementById("click").addEventListener("click",()=>{
+
+    const message = { users: "{{name}}", content:document.getElementById("text").value };
+    socket.send(JSON.stringify(message));
+    document.getElementById("text").value = ""
+})
+
+document.getElementById("text").addEventListener("keydown",(event)=>{
+    if (event.key === "Enter"){
+    const message = { users: '{{name}}', content:document.getElementById("text").value };
+    socket.send(JSON.stringify(message));
+    document.getElementById("text").value = ""
+    }
+})
+
+function copy(){
+    navigator.clipboard.writeText("{{group_name}}")
+    .then(() => {
+        alert('Group ID copied to clipboard!');
+    })
+    .catch(err => {
+        console.error('Failed to copy text: ', err);
+        fallbackCopyText(text);
+    });
+}
+
+    </script>
+</body>
+</html>
