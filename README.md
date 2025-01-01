@@ -119,6 +119,7 @@ CHANNEL_LAYERS = {
 
 ### **Chat Interface**
 - Real-time messages appear as soon as they're sent.
+![Screenshot_1](scr2.png)
 
 ---
 
