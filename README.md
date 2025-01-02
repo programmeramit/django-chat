@@ -48,7 +48,7 @@ This is a **real-time group chat application** built with **Django Channels** an
 ### Steps
 1. **Clone the repository**:
    ```bash
-    https://github.com/programmeramit/django-chat
+   git clone  https://github.com/programmeramit/django-chat
    cd django-chat
    ```
 
@@ -146,6 +146,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [Redis](https://redis.io/)
 - All contributors and the open-source community!
 
----
-
-Feel free to replace placeholders like `yourusername` and adjust sections as needed for your project. Let me know if you want further customization!
